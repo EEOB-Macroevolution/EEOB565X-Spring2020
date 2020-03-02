@@ -57,7 +57,7 @@ The `rnorm` function lets us draw from a normal distribution. We can draw 50 val
 a <- rnorm(50,5,1) 
 ```
 
-We can use the `plot()` function to view a simple scatter plot of values in a vecotor.
+We can use the `plot()` function to view a simple scatter plot of values in a vector.
 
 ```{r}
 plot(a)   
@@ -149,7 +149,7 @@ Most of the time, it is not necessary to directly edit the structure of `phylo` 
 
 ### Reading and writing trees
 
-In order to interface with other softwares, or reuse data, we need to be able to input trees from a file, and in reverse to output trees to a file.
+In order to interface with other software, or reuse data, we need to be able to input trees from a file, and in reverse to output trees to a file.
 _ape_ supports two formats for input/output of trees, the Newick and the Nexus format. Let's write our example tree to a Newick file:
 
 ```{r}
@@ -186,7 +186,7 @@ plot(tree)
 ```
 
 
-Other options are available, such as colouring the edges
+Other options are available, such as coloring the edges
 
 ```{r}
 plot(tree, edge.color = rainbow(8))
@@ -229,4 +229,50 @@ max(depths) - depths
 ```
 
 ## Building trees in R
+
+This lesson is based on a tutorial written by Klaus Schliep entitled "[Estimating phylogenetic trees with phangorn](https://rdrr.io/cran/phangorn/f/inst/doc/Trees.pdf)". 
+
+To estimate a phylogeny from DNA sequences, we will use the package [_phangorn_](https://github.com/KlausVigo/phangorn).
+
+```{r}
+library(phangorn)
+```
+
+Note that this is one of the few R packages for estimating phylogenies. Typically, researchers use other tools for this like RAxML, BEAST2, IQTree, RevBayes, PAUP*, etc. These software tools are developed as stand-alone programs and most are not accessible in the R environment. The purpose of this lesson is to walk you through how to estimate a phylogenetic tree using maximum likelihood for a simple dataset. With larger datasets, it is much more practical to use a tool that is actively developed for difficult phylogenetic problems. 
+
+### Parsinony 
+
+```{r}
+primates <- read.phyDat("primates.dna", format = "interleaved")
+primates
+```
+
+
+
+```{r}
+primates_start_tree <- random.addition(primates)
+primates_start_tree <- acctran(primates_start_tree, primates)
+```
+
+```{r}
+plot(primates_start_tree)
+```
+
+```{r}
+primates_opt <- optim.parsimony(primates_start_tree, primates)
+primates_opt <- acctran(primates_opt, primates)
+```
+
+```{r}
+plot(primates_opt,type="unrooted")
+```
+
+### Maximum Likelihood
+
+Compute the likelihood of the parsimony tree (what branch lengths are used?)
+
+```{r}
+fit <- pml(primates_opt, data=primates)
+fit
+```
 
