@@ -298,7 +298,7 @@ Now let's plot the tree.
 plot(primates_start_tree)
 ```
 
-You will notice that the tree does not have meaningful branch lenghts. We can represent the branch lengths in units of the number of changes (under parsimony) using the `acctran()` function. 
+You will notice that the tree does not have meaningful branch lengths. We can represent the branch lengths in units of the number of changes (under parsimony) using the `acctran()` function. 
 
 ```{r}
 primates_start_tree <- acctran(primates_start_tree, primates)
@@ -330,7 +330,7 @@ Plot the optimized tree:
 plot(primates_opt)
 ```
 
-What is different about your starting tree and the optimized tree?
+What is different between the starting tree and the optimized tree?
 
 ### Maximum Likelihood
 
