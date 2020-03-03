@@ -11,13 +11,13 @@ Today we continue our investigation of correlated trait evolution, and implement
 ### Download data files
 To run the analyses in this tutorial, please download the following files from our Git-course repository: 
 
-[Phylogeny](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/tree.64.tre)
+[Phylogeny](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/TutorialData/tree.64.tre)
 
-[Data](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/DiscreteData.csv)
+[Data](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/TutorialData/DiscreteData.csv)
 
 Additionally, The R-script for running the code found in this tutorial is found here:
 
-[RScript](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/PhyloAssocDiscrete.r)
+[RScript](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/PhyloAssocDiscrete.r)
 
 As before, on your local computer, place them in a folder named 'TutorialData', which is found in the same directory as this tutorial. 
 

@@ -98,7 +98,7 @@ disc.res12.b<-fitPagel(tree,x=tr1,y=tr2)
 disc.res12.b
   #NOTE: LOOK AT PHYLOGENY AND DATA HERE!  WE have strong support for correlated evolution, but both traits are co-distributed and clustered
     #essentially, 1 evolutionary shift could explain the pattern: the 'BiSSE' problem (need ancestral state estimation: next week)
- ##### ALWAYS PLOT YOUR DATA! DON'T JUST RUN STATISTICS (statistical anlaysis alone here leads to mis-interpretation)
+ ##### ALWAYS PLOT YOUR DATA! DON'T JUST RUN STATISTICS (statistical analysis alone here leads to mis-interpretation)
 
 #Traits 3&4
 plot.phylo(tree,show.tip.label = F)
