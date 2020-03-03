@@ -11,15 +11,15 @@ This tutorial is intended to provide an introduction to the basics of implementi
 ### Download data files
 To run the analyses in this tutorial, please download the following files from our Git-course repository: 
 
-[Phylogeny](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/Mander.tre)
+[Phylogeny](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/TutorialData/Mander.tre)
 
-[Data1](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/HydromantesMns.csv)
+[Data1](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/TutorialData/HydromantesMns.csv)
 
-[Data2](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/PlethodonMns.csv)
+[Data2](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/TutorialData/PlethodonMns.csv)
 
 Additionally, The R-script for running the code found in this tutorial is found here:
 
-[RScript](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/PhyloRegressionContinuous.r)
+[RScript](https://eeob-macroevolution.github.io/EEOB565X-Spring2020/practicals/PhyloRegressionContinuous.r)
 
 Then, on your local computer, place them in a folder named 'TutorialData', which is found in the same directory as this tutorial. 
 
