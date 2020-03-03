@@ -69,8 +69,9 @@ summary(lm(Y.pic~X.pic+0))   #coefficients of the model
 
 
 #### 2: Phylogenetic Generalized Least Squares
-#To perform PGLS in R, we must first estimate the phylogenetic covariance matrix V:
+#To perform PGLS in R, we must first estimate the phylogenetic covariance matrix V (C in matrix form):
 V<-corBrownian(phy=Pleth.new$phy)
+C <- vcv.phylo(phy = Pleth.new$phy)
 
 #Now we run the analysis:
 library(nlme)
@@ -80,16 +81,16 @@ anova(bm.gls)
 
 
 #### 3: Phylogenetic Transform
-library(geomorph) 
-gdf<-geomorph.data.frame(SVL=SVL.new,HL=HL.new,Gps=Gps, tree=Pleth.new$phy)
-res.PhyT<-procD.pgls(HL~SVL, data = gdf, phy = Pleth.new$phy, print.progress = FALSE)
-summary(res.PhyT)    #Same F-ratio as before (note: p-value found using permutation in this case)
-res.PhyT$pgls.coefficients  #Same parameter estimates as before
+library(RRPP)
+rdf<-rrpp.data.frame(SVL=as.matrix(SVL.new),HL=as.matrix(HL.new),Gps=as.matrix(Gps), C=C)
+res.PhyT<-lm.rrpp(HL~SVL, data = rdf, Cov = C, print.progress = FALSE)
+anova(res.PhyT)    #Same F-ratio as before (note: p-value found using permutation in this case)
+coef(res.PhyT)
 
 #### Phylogenetic ANOVA
 #Phylogenetic anova
 aov.phylo(SVL.new~Gps, phy = Pleth.new$phy)
-procD.pgls(SVL~Gps, data = gdf, phy = Pleth.new$phy,print.progress = FALSE)
+anova(lm.rrpp(SVL~Gps, data = rdf, Cov = C, print.progress = FALSE))
 anova(gls(SVL.new~Gps,correlation = corBrownian(phy=Pleth.new$phy), data=data.frame(SVL.new, Gps)))  #identical to Phylo.transform
 
 

@@ -11,15 +11,15 @@ This tutorial is intended to provide an introduction to the basics of implementi
 ### Download data files
 To run the analyses in this tutorial, please download the following files from our Git-course repository: 
 
-[Phylogeny](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/Mander.tre)
+[Phylogeny](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/Mander.tre)
 
-[Data1](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/HydromantesMns.csv)
+[Data1](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/HydromantesMns.csv)
 
-[Data2](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/PlethodonMns.csv)
+[Data2](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/TutorialData/PlethodonMns.csv)
 
 Additionally, The R-script for running the code found in this tutorial is found here:
 
-[RScript](https://eeob-macroevolution.github.io/EEOB-565X-Spring2018/practicals/TutorialData/PhyloRegressionContinuous.r)
+[RScript](https://eeob-macroevolution.github.io/EEOB-565X-Spring2020/practicals/PhyloRegressionContinuous.r)
 
 Then, on your local computer, place them in a folder named 'TutorialData', which is found in the same directory as this tutorial. 
 
@@ -151,8 +151,9 @@ Now let's investigate the same pattern using a different mathematical implementa
 ![Fig 4. Mathematical description of PGLS.](TutorialData/PGLS.png)
 
 ```{r eval=TRUE}
-#To perform PGLS in R, we must first estimate the phylogenetic covariance matrix V:
+#To perform PGLS in R, we must first estimate the phylogenetic covariance matrix V (C in matrix form):
 V<-corBrownian(phy=Pleth.new$phy)
+C <- vcv.phylo(phy = Pleth.new$phy)
 
 #Now we run the analysis:
 library(nlme)
@@ -172,11 +173,11 @@ A third implementation of phylogenetic regression is to use phylogenetic transfo
 
 ```{r eval=TRUE}
 #To perform an analysis using phylogenetic transform in R, we do the following:
-library(geomorph) 
-gdf<-geomorph.data.frame(SVL=SVL.new,HL=HL.new,Gps=Gps, tree=Pleth.new$phy)
-res.PhyT<-procD.pgls(HL~SVL, data = gdf, phy = Pleth.new$phy, print.progress = FALSE)
-summary(res.PhyT)    #Same F-ratio as before (note: p-value found using permutation in this case)
-res.PhyT$pgls.coefficients  #Same parameter estimates as before
+library(RRPP)
+rdf<-rrpp.data.frame(SVL=as.matrix(SVL.new),HL=as.matrix(HL.new),Gps=as.matrix(Gps), C=C)
+res.PhyT<-lm.rrpp(HL~SVL, data = rdf, Cov = C, print.progress = FALSE)
+anova(res.PhyT)    #Same F-ratio as before (note: p-value found using permutation in this case)
+coef(res.PhyT)
 ```
 
 Once again we see that parameter estimates and statistical summaries (F-ratios) are identical to both PIC and PGLS.  The advantage of this last approach however, will become clear in a few weeks.  This implementation may be used for examining patterns in highly-multivariate phenotypes (Y), whereas parametric versions of PIC and PGLS cannot be used. 
@@ -184,32 +185,33 @@ Once again we see that parameter estimates and statistical summaries (F-ratios) 
 ### Related Topics
 
 #### Phylogenetic ANOVA
-In addition to the three implementations of phylogenetic regression reviewed above, there are several other related analyses of interest. Perhaps the most obvious is performing analysis of variance (ANOVA) in a phylogenetic framework. There are two options. First, one may use the simulation procedure of Garland et al. (1993). This approach to 'phylogenetic anova' does *NOT* condition the analysis on the phylogeny, but rather uses an OLS ANOVA to obtain a statistical summary for the observed data, and then generates a set of possible response (Y) data via phylogenetic simulation; where traits are simulated on the phylogeny under a Brownian motion model (as above). OLS ANOVA is then performed on each simulated dataset, from which the F-ratios are obtained. This generates a distribution of possible F-values against which the observed is compared. 
+In addition to the three implementations of phylogenetic regression reviewed above, there are several other related analyses of interest. Perhaps the most obvious is performing analysis of variance (ANOVA) in a phylogenetic framework. There are two options. First, one may use the simulation procedure of Garland et al. (1993). This approach to 'phylogenetic anova' does *NOT* condition the analysis on the phylogeny, but rather uses an OLS ANOVA to obtain a statistical summary for the observed data, and then generates a set of possible response (Y) data via phylogenetic simulation; where traits are simulated on the phylogeny under a Brownian motion model (as above). OLS ANOVA is then performed on each simulated dataset, from which the F-ratios are obtained. This generates a distribution of possible F-values against which the observed is compared. **As shown in lecture, results from this approach do not match those of PGLS, and so it should not be used.**
 
 A second procedure using phylogenetic transformation and permutation (RRPP). Here the data are first conditioned on the phylogeny and an ANOVA performed. This approach is identical to that used in phylogenetic regression via transformation as per above. Then, permutation of residuals is used to assess significance (RRPP: Adams and Collyer, in review). One can also use gls for univariate analsyes:
 
 ```{r eval=TRUE}
 #Phylogenetic anova
 aov.phylo(SVL.new~Gps, phy = Pleth.new$phy)
-procD.pgls(SVL~Gps, data = gdf, phy = Pleth.new$phy,print.progress = FALSE)
+anova(lm.rrpp(SVL~Gps, data = rdf, Cov = C, print.progress = FALSE))
 anova(gls(SVL.new~Gps,correlation = corBrownian(phy=Pleth.new$phy), data=data.frame(SVL.new, Gps)))  #identical to Phylo.transform
 ```
 
 
-Remember, phylogenetic ANOVA via simulation (Garland et al. 1993) does *not* condition the data on the phylogeny. It uses OLS ANOVA followed by BM simulations for possible results. This is why the F-ratio differs in the first method above as compared to the other two approaches (PGLS and phylogenetic transform). The latter two methods *do* condition the data on the phylogeny during the analysis. 
+Remember, phylogenetic ANOVA via simulation (Garland et al. 1993) does *not* condition the data on the phylogeny. It uses OLS ANOVA followed by BM simulations for possible results. This is why the F-ratio differs in the first method above as compared to the other two approaches (PGLS and phylogenetic transform). Recall also from lecture that the distribution of F-ratios and significance levels, do not match using the Garland et al. procedure. However, the latter two methods *do* condition the data on the phylogeny during the analysis, and match one another perfectly. 
 
-####Phylogenetic Signal
+#### Phylogenetic Signal
 Another question one commonly asks is: "To what extent does my data display phylogenetic signal?"  Generally speaking, phylogenetic signal is the degree to which trait similarity reflects phylogenetic relatedness. That is, it describes the extent to which closely related species are similar in their trait values. Several methods have been proposed for this, the two most common of which are K (kappa: Blomberg et al. 2003; Adams, 2014), and lambda (Pagel 1994). Here we use the former method. 
 
 ```{r eval=TRUE}
 #Phylogenetic Signal
+library(geomorph)
 phylosig(tree=Pleth.new$phy, x=SVL.new, method="K", test=T, nsim=1000)  #phytools
   res<-physignal(A=SVL.new,phy = Pleth.new$phy, print.progress = FALSE)   #geomorph
 summary(res)  #the same, but the latter method (from geomorph) can accomodate multivariate data
 plot(res)
 ```
 
-####Additional Simulation Approaches
+#### Additional Simulation Approaches
 Sometimes we may wish to simulate data with a known correlation between traits under Brownian motion. In this case, we cannot simulate each trait separately, as that is tantamount to simulating data with no correlation. 
 
 In the non-phylogenetic (OLS) world, simulating such data is accomplished using an input covariance matrix. The following is an example:
@@ -230,7 +232,7 @@ dat.BM<-sim.char(phy = mytree,par = R,nsim = 1)[,,1]
 plot(dat.BM, asp=1)
 ```
 
-##Practical Questions
+## Practical Questions
 
 To apply what you have learned, please do the following:
 
