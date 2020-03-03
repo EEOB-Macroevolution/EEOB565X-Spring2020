@@ -277,31 +277,60 @@ primates <- read.phyDat("primates.dna", format = "interleaved")
 primates
 ```
 
-
-
 ### Parsimony 
 
-To begin, we will first estimate a tree using parsimony. 
-
-
+To begin, we will first estimate a tree using parsimony. To perform a heuristic search under parsimony, we can start with a tree built using a random-addition algorithm.
 
 ```{r}
 primates_start_tree <- random.addition(primates)
-primates_start_tree <- acctran(primates_start_tree, primates)
 ```
+
+First let's check the parsimony score of our starting tree using the `parsimony()` function:
+
+```{r}
+parsimony(primates_start_tree, primates)
+```
+
+
+Now let's plot the tree.
 
 ```{r}
 plot(primates_start_tree)
 ```
+
+You will notice that the tree does not have meaningful branch lenghts. We can represent the branch lengths in units of the number of changes (under parsimony) using the `acctran()` function. 
+
+```{r}
+primates_start_tree <- acctran(primates_start_tree, primates)
+```
+
+The tree should now be depicted as a phylogram where the branch lengths correspond to the number of state changes along a branch.
+
+```{r}
+plot(primates_start_tree)
+```
+
+Now we can optimize the tree topology under parsimony using the `optim.parsimony()` function. This performs a series of tree rearrangments under NNI. 
 
 ```{r}
 primates_opt <- optim.parsimony(primates_start_tree, primates)
 primates_opt <- acctran(primates_opt, primates)
 ```
 
+What is the parsimony score of the optimized tree?
+
 ```{r}
-plot(primates_opt,type="unrooted")
+parsimony(primates_opt, primates)
 ```
+
+
+Plot the optimized tree:
+
+```{r}
+plot(primates_opt)
+```
+
+What is different about your starting tree and the optimized tree?
 
 ### Maximum Likelihood
 
