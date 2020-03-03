@@ -27,11 +27,17 @@ Like any programming language, one must learn its syntax. Over time one learns t
 Assign a value to a variable
 
 ```{r eval=TRUE}
-3->a  
+a <- 3
 a
+
+b = 4
+b
+
+5 -> c
+c
 ```
 
-Combine values into a vector (i.e., list) using the `c` function
+Combine values into a vector (i.e., array) using the `c` function
 
 ```{r}
 b<-c(3,4,5)   
@@ -43,6 +49,20 @@ Items in a vector can be accessed by calling their position using the `[]` opera
 
 ```{r}
 b[2]	
+```
+
+Combine objects into a list using the `list` function
+
+```{r}
+l <- list(number = 3, values = c(3.5, 4, 12), message = "many things can go in a list")  
+l
+```
+
+Items in a list can be accessed by calling their position using the `[[]]` operator, or by calling their name using the `$` operator.
+
+```{r}
+l[[3]] 
+l$message
 ```
 
 R provides functions for generating random deviates from several different parametric distributions. For example, we can draw a single random value uniformly from the interval (0,1):
@@ -240,7 +260,7 @@ library(phangorn)
 
 Note that this is one of the few R packages for estimating phylogenies. Typically, researchers use other tools for this like RAxML, BEAST2, IQTree, RevBayes, PAUP*, etc. These software tools are developed as stand-alone programs and most are not accessible in the R environment. The purpose of this lesson is to walk you through how to estimate a phylogenetic tree using maximum likelihood for a simple dataset. With larger datasets, it is much more practical to use a tool that is actively developed for difficult phylogenetic problems. 
 
-### Parsinony 
+### Parsimony 
 
 ```{r}
 primates <- read.phyDat("primates.dna", format = "interleaved")
