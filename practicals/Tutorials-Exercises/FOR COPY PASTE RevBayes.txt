@@ -1,4 +1,0 @@
-FOR REVBAYES:
-
-remember: highlight text in tutorial, right-click-copy
-in window, right-click (will be paste)
