@@ -260,12 +260,28 @@ library(phangorn)
 
 Note that this is one of the few R packages for estimating phylogenies. Typically, researchers use other tools for this like RAxML, BEAST2, IQTree, RevBayes, PAUP*, etc. These software tools are developed as stand-alone programs and most are not accessible in the R environment. The purpose of this lesson is to walk you through how to estimate a phylogenetic tree using maximum likelihood for a simple dataset. With larger datasets, it is much more practical to use a tool that is actively developed for difficult phylogenetic problems. 
 
-### Parsimony 
+### Data File
+
+We will use a common example dataset of 12 species of primates plus two outgroups (cow and mouse). This alignment was assembled by Dr. Masami Hasegawa of the Institute of Statistical Mathematics in Tokyo, from sequencing done by Kenji Hayasaka, Takashi Gojobori, and Satoshi Horai (Molecular Biology and Evolution 5: 626-644, 1988). For more details, see [J. Felsenstein's website](http://evolution.gs.washington.edu/gs570/2016/#data).
+
+Download the data file using R:
+
+```{r}
+download.file("https://raw.githubusercontent.com/EEOB-Macroevolution/EEOB565X-Spring2020/master/practicals/01-intro-to-phylo/primates.dna","primates.dna")
+```
+
+This will download the file `primates.dna` into your current working directory. Now we can read in the file using the function `read.phyDat()`.
 
 ```{r}
 primates <- read.phyDat("primates.dna", format = "interleaved")
 primates
 ```
+
+
+
+### Parsimony 
+
+To begin, we will first estimate a tree using parsimony. 
 
 
 
