@@ -334,10 +334,42 @@ What is different about your starting tree and the optimized tree?
 
 ### Maximum Likelihood
 
-Compute the likelihood of the parsimony tree (what branch lengths are used?)
+Compute the likelihood of the parsimony tree and parsimony branch lenghts. 
 
 ```{r}
-fit <- pml(primates_opt, data=primates)
-fit
+fitJC <- pml(primates_opt, data=primates)
+fitJC
 ```
 
+```{r}
+fitJC <- optim.pml(fitJC, optNni=TRUE)
+plot(fitJC$tree)
+```
+
+```{r}
+outgroup <- c('Mouse','Bovine')
+JC_tree_rooted <- root(fitJC$tree,outgroup)
+plot(JC_tree_rooted)
+```
+
+
+```{r}
+fitGTR <- optim.pml(fitJC, model="GTR")
+GTR_tree_rooted <- root(fitGTR$tree,outgroup)
+plot(GTR_tree_rooted)
+fitGTR
+```
+
+
+```{r}
+anova(fitJC, fitGTR)
+```
+
+
+```{r bs, results="hide"}
+bs = bootstrap.pml(fitGTR, bs=100, optNni=TRUE)
+```
+
+```{r}
+plotBS(root(fitGTR$tree,outgroup), bs, p=0, type="phylogram")
+```
