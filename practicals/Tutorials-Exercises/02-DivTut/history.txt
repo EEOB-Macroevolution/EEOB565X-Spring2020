@@ -1,0 +1,100 @@
+mymodel.graph("yule_graph.dot")
+monitors[1] = mnModel(filename="output/bears_yule.log",printgen=10, separator = TAB)
+monitors[2] = mnScreen(printgen=1000, speciation)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/yule_powp.out", cats=100, sampleFreq=10)
+pow_p.burnin(generations=10000,tuningInterval=200)
+pow_p.run(generations=10000)
+ss = steppingStoneSampler(file="output/yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss.marginal()
+speciation
+moves
+pow_p
+sampling
+root_time
+time.tree
+AbstractHomologousDiscreteCharacterData
+timetree
+T
+ss.marginal()
+clear()
+T <- readTrees("data/bears_dosReis.tre")[1]
+mvi = 1
+sp_mean <- 0.2
+speciation ~ dnExp(1.0 / sp_mean)
+moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)sp_mean <- 0.2
+speciation ~ dnExp(1.0 / sp_mean)
+moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
+ext_mean <- 0.01
+extinction ~ dnExp(1.0 / ext_mean)
+moves[mvi++] = mvScale(extinction, lambda=1.0, tune=true, weight=3.0)
+diversification := speciation - extinction
+turnover := extinction / speciation
+sampling <- 1.0
+root_time <- T.rootAge()
+timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=T.taxa())
+timetree.clamp(T)
+mymodel = model(speciation)
+mymodel.graph("bd_graph.dot")
+monitors[1] = mnModel(filename="output/bears_BDP.log",printgen=10, separator = TAB)
+monitors[2] = mnScreen(printgen=1000, speciation, extinction)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/BDP_powp.out", cats=100, sampleFreq=10)
+pow_p.burnin(generations=10000,tuningInterval=200)
+pow_p.run(generations=10000)
+ss = steppingStoneSampler(file="output/BDP_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss.marginal()
+clear()
+data <- readDiscreteCharacterData(file="data/bears_irbp.nex")
+mvi = 1
+# Speciation rate
+sp_mean <- 0.02
+speciation ~ dnExp(1.0 / sp_mean)
+moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
+# Extinction rate
+ext_mean <- 0.01
+extinction ~ dnExp(1.0 / ext_mean)
+moves[mvi++] = mvScale(extinction, lambda=1.0, tune=true, weight=3.0)
+# Deterministic nodes
+diversification := speciation - extinction
+turnover := extinction / speciation
+# Sampling
+sampling <- 1.0
+tKretzoiarctos <- 11.2
+mean_ra <- 33.24 - tKretzoiarctos
+stdv_ra <- 0.25
+mu_ra <- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
+root_time ~ dnLnorm(mu_ra, stdv_ra, offset=tKretzoiarctos)
+timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=data.taxa())
+moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
+moves[mvi++] = mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0)
+moves[mvi++] = mvSlide(root_time, delta=2.0, tune=true, weight=10.0)
+moves[mvi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
+moves[mvi++] = mvNNI(timetree, weight=8.0)
+moves[mvi++] = mvNarrow(timetree, weight=8.0)
+moves[mvi++] = mvFNPR(timetree, weight=8.0)
+branch_rates_mean ~ dnExponential(10.0)
+moves[mvi++] = mvScale(branch_rates_mean, lambda=1.0, tune=true, weight=2.0)
+n_branches <- 2 * data.ntaxa() - 2
+for(i in 1:n_branches){
+    branch_rates[i] ~ dnExp(1/branch_rates_mean)
+    moves[mvi++] = mvScale(branch_rates[i], lambda=1.0, tune=true, weight=2.0)
+}
+moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0, tune=true, weight=4.0)
+sf_hp <- v(1,1,1,1)
+sf ~ dnDirichlet(sf_hp)
+moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+er_hp <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_hp)
+moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+Q := fnGTR(er,sf)
+phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=branch_rates, nSites=data.nchar(), type="DNA")
+phySeq.clamp(data)
+mymodel = model(speciation)
+monitors[1] = mnModel(filename="output/TimeTree_bears_mcmc.log", printgen=10)
+monitors[2] = mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree)
+monitors[3] = mnScreen(printgen=100, root_time)
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.burnin(generations=5000,tuningInterval=100)
+mymcmc.run(generations=40000)
+tt = readTreeTrace("output/TimeTree_bears_mcmc.trees", "clock")
+mapTree(tt, "output/TimeTree_bears_mcmc_MAP.tre")
+q()

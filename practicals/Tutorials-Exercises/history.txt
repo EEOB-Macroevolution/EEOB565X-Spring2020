@@ -1,0 +1,10 @@
+n_areas <- 3
+for (i in 1:n_areas) {
+    for (j in 1:n_areas) {
+        dr[i][j] <- 1.0
+    }
+}
+dir
+ls
+ls()
+q()

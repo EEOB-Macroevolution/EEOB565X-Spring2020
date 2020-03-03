@@ -1,0 +1,48 @@
+mean~dnUnif(10,50)
+mean
+var~dnGamma(20,2)
+alpha := (mean*mean)/var
+beta := mean/var
+obs = 35.21
+d~dnGamma(alpha,beta)
+d.clamp(obs)
+d.lnProbability()
+mymodel = model(beta)
+mymodel
+moves[1] = mvSlide(mean, delta=1.0, tune=true, weight=3.0)
+moves[2] = mvScale(var,lambda=1.0, tune=true, weight=3.0)
+monitors[1]=mnModel(file="archery_mcmc_1.log",printgen=10, ...)
+[A[A[B[B
+1
+monitors[1] = mnModel(file = "archery_mcmc_1.log", printgen=10, ...)
+[A[B
+`
+...
+monitors[1] = mnModel(file="archery_mcmc_1.log",printgen=10,d)
+monitors[2] = mnScreen(printgen=1000,mean,var)
+mymcmc = mcmc(mymodel,monitors, moves, nruns=1)
+mymcmc.burnin(generations=10000,tuningInterval=1000)
+mymcmc.run(generations=40000)
+mymcmc
+mean ~ dnUniv(10,50)
+[A[B
+2
+mean ~ dnUnif(10,50)
+var~dnGamma(20,2)
+alpha := (mean*mean)/var
+beta := mean/var
+obs = 35.21
+d~dnGamma(alpha,beta)
+d.clamp(obs)
+d.lnProbability)
+d.lnProbability()
+mymodel = model(beta)
+moves[1] = mvSlide(mean, delta=1, tune=true, weight=3)
+moves[2] = mvScale(var, lambda=1, tune=true, weight=3)
+monitors[1] = mnModel(file="archery_mcmc_1.log",printgen=10)
+monitors[2] = mnScreen(printgen=1000,mean,var)
+mymcmc = mcmc(mymodel,monitors,moves,nruns=1)
+mymcmc.burnin(generations=10000,tuningInterval=1000)
+mymcmc.run(generations=40000)
+tracer 
+tracer archery_mcmc_1.log

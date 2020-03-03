@@ -1,0 +1,36 @@
+/* Graphical model description in DOT language                                    */
+/*    To view graph:                                                              */
+/*       open this file in the program Graphviz: http://www.graphviz.org          */
+/*       or paste contents into an online viewer: http://stamm-wilbrandt.de/GraphvizFiddle */
+
+digraph REVDAG {
+   n_speciation [shape=oval, style=filled, fillcolor=white, label="speciation"]
+   n_0x6005a0220 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ div(RealPos<any>) ]"]
+   n_0x6005a04c0 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_sp_mean [shape=record, style=filled, fillcolor=white, label="{sp_mean|0.2}"]
+   n_diversification [shape=oval, style="dashed,filled", fillcolor=white, label="diversification\n[ sub(Real<any>) ]"]
+   n_extinction [shape=oval, style=filled, fillcolor=white, label="extinction"]
+   n_0x6005a17f0 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ div(RealPos<any>) ]"]
+   n_0x6005a1ab0 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_ext_mean [shape=record, style=filled, fillcolor=white, label="{ext_mean|0.01}"]
+   n_turnover [shape=oval, style="dashed,filled", fillcolor=white, label="turnover\n[ div(RealPos<any>) ]"]
+   n_timetree [shape=oval, style=filled, fillcolor=gray, label="timetree"]
+   n_root_time [shape=record, style=filled, fillcolor=white, label="{root_time|48.54405}"]
+   n_sampling [shape=record, style=filled, fillcolor=white, label="{sampling|1}"]
+   n_speciation -> n_diversification[style=dashed]
+   n_speciation -> n_turnover[style=dashed]
+   n_speciation -> n_timetree
+   n_0x6005a0220 -> n_speciation
+   n_0x6005a04c0 -> n_0x6005a0220[style=dashed]
+   n_sp_mean -> n_0x6005a0220[style=dashed]
+   n_extinction -> n_turnover[style=dashed]
+   n_extinction -> n_timetree
+   n_extinction -> n_diversification[style=dashed]
+   n_0x6005a17f0 -> n_extinction
+   n_0x6005a1ab0 -> n_0x6005a17f0[style=dashed]
+   n_ext_mean -> n_0x6005a17f0[style=dashed]
+   n_root_time -> n_timetree
+   n_sampling -> n_timetree
+   {rank=same; n_timetree;}
+   graph [bgcolor=lavenderblush2, pad=0.25]
+}
