@@ -393,10 +393,10 @@ The results of this comparison show that GTR (model 2) is best supported.
 
 ## Calculating the Likelihood of a Tree
 
-In lecture you were given the optional challenge to calculate the likelihood of the tree pictured below assuming equal branch lengths and the JC69 model. The next part of this lesson will be to do this in R. 
+In the lecture, you were given the optional challenge to calculate the likelihood of the tree pictured below assuming equal branch lengths and the JC69 model. The next part of this lesson will be to do this in R. 
 
 
 ![](challenge_tree.001.png)
 
 
-For a detailed explaination of this, you can see Josh Justison's solution to the challenge problem here: [https://jjustison.github.io/tree-likelihood](https://jjustison.github.io/tree-likelihood/)
+For a detailed explanation, you can see Josh Justison's solution to the challenge problem here: [https://jjustison.github.io/tree-likelihood](https://jjustison.github.io/tree-likelihood/)
