@@ -40,7 +40,7 @@ c
 Combine values into a vector (i.e., array) using the `c` function
 
 ```{r}
-b<-c(3,4,5)   
+b <- c(3,4,5)   
 b
 ```
 
@@ -113,7 +113,7 @@ library(ape)
 _ape_ provides functions for simulating random trees with a fixed number of tips, `rcoal` (for ultrametric trees) and `rtree`. These functions can be useful for testing code on a small example, which is what we are going to do here.
 
 ```{r}
-tree = rcoal(5)
+tree <- rcoal(5)
 ```
 
 Let's take a look at what exactly _ape_ created when we asked for a tree:
@@ -179,7 +179,7 @@ write.tree(tree, file = "newick.tre")
 Opening the file `newick.tre` shows that the tree has been written as a Newick string. We can read that file again into the R environment:
 
 ```{r}
-newick_tree = read.tree("newick.tre")
+newick_tree <- read.tree("newick.tre")
 ```
 
 Opening both `tree` and `newick_tree` in the environment panel of RStudio shows that they are indeed the same tree.
@@ -192,7 +192,7 @@ write.nexus(tree, file = "nexus.nex")
 as well as read it back in.
 
 ```{r}
-nexus_tree = read.nexus("nexus.nex")
+nexus_tree <- read.nexus("nexus.nex")
 ```
 
 Again, this tree is identical to the original.
@@ -244,7 +244,7 @@ node.depth.edgelength(tree)
 Note that these are depths, i.e. the root is at d=0. In order to obtain the times, with the present at t=0, the values need to be reversed.
 
 ```{r}
-depths = node.depth.edgelength(tree)
+depths <- node.depth.edgelength(tree)
 max(depths) - depths
 ```
 
@@ -361,22 +361,26 @@ JC_tree_rooted <- root(fitJC$tree,outgroup)
 plot(JC_tree_rooted)
 ```
 
-If we want to optimize the tree using a different model like e.g., GTR, we can use the `pml` object as an argument and specify the `GTR` model. Perhapse we would also like to change to `SPR` for tree rearrangements. 
+If we want to optimize the tree using a different model like e.g., GTR, we can use the `pml` object as an argument and specify the `GTR` model.
 
 ```{r}
-fitGTR <- optim.pml(fitJC, model="GTR", rearrangement = "SPR")
-GTR_tree_rooted <- root(fitGTR$tree,outgroup)
-plot(GTR_tree_rooted)
+fitGTR <- optim.pml(fitJC, model="GTR", optNni=TRUE)
+plot(fitGTR$tree)
 ```
 
+Here the outgroup is not monophyletic, so trying to reroot the tree will give an error
 
-View the deatils of the `fitGTR` object. What is the loglikelihood?
+```{r error=TRUE}
+GTR_tree_rooted <- root(fitGTR$tree,outgroup)
+```
+
+View the details of the `fitGTR` object. What is the loglikelihood?
 
 ```{r}
 fitGTR
 ```
 
-How are the tw trees different? 
+How are the two trees different? What are possible reasons for this ?
 
 One thing that may be bothering you is how do you decide if you should analyze your data under JC69 or under GTR. One option is to compare the models statistically. You can use a likelihood ratio test to compare the two models.
 
