@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Source
 
-You can find the source files for this tutorial on the class GitHub repository: [https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/01-intro-to-phylo](https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/01-intro-to-phylo)
+You can find the source files for this tutorial on the class GitHub repository:
+
+[https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/01-intro-to-phylo](https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/01-intro-to-phylo)
 
 ## A Brief Introduction to R
 
@@ -101,14 +103,25 @@ median(a)
 var(a)
 ```
 
+Finally, you can look at the help for any function by calling `?`
+
+```{r}
+?var
+```
 
 ## Working with Trees using the _ape_ Package
 
 The _ape_ package provides a structure for storing a phylogenetic tree, as well as basic manipulation and plotting functions. The _ape_ structure is used by most R packages which deal with phylogenetic trees, so it is important to understand it.
 
-The first step is to install the package if it is not already (use `install.packages("ape")`), and load it into the environment. _ape_ is distributed by CRAN, the main package repository for R.
 
-Once the package is installed, you can load it using the `library()` function:
+The first step is to install the package if it is not already
+
+```{r eval=FALSE}
+install.packages("ape")
+```
+
+and load it into the environment. _ape_ is distributed by CRAN, the main package repository for R.
+
 ```{r}
 library(ape)
 ```
@@ -258,6 +271,10 @@ max(depths) - depths
 This lesson is based on a tutorial written by Klaus Schliep entitled "[Estimating phylogenetic trees with phangorn](https://rdrr.io/cran/phangorn/f/inst/doc/Trees.pdf)". 
 
 To estimate a phylogeny from DNA sequences, we will use the package [_phangorn_](https://github.com/KlausVigo/phangorn).
+
+```{r eval=FALSE}
+install.packages("phangorn")
+```
 
 ```{r}
 library(phangorn)
