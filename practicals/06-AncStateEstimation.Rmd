@@ -140,6 +140,9 @@ x<-fastBM(tree,internal=TRUE,mu=3)
 phenogram(tree,x,ftype="off")
 
 #estimate with no prior 
+x.tip<-x[match(tree$tip.label,names(x))]
+phenogram(tree,x.tip)  #traitgram under BM with no ancestral information
+
 a<-x[as.character(1:tree$Nnode+Ntip(tree))]
 x<-x[tree$tip.label]
 ## let's see how bad we do if we ignore the trend

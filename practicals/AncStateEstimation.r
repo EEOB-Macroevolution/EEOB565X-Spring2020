@@ -18,23 +18,18 @@ add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
                   y=-max(nodeHeights(tree)),fsize=0.8)
 
 ### A:Parsimony estimation
-  #NOTE: fix this!!   Plot does not seem to be correct, so something is amiss.
-
-
-     #programming NOTE: 'MPR' in APE requires unrooted tree, outgroup specification & integer states
-#gp.int<-as.numeric(gp); names(gp.int)<-names(gp)  
-#anc.mp<-MPR(gp.int,unroot(tree), outgroup = "Anolis_occultus") 
+library(castor)
+gp.int<-as.numeric(gp); names(gp.int)<-names(gp)  
+anc.mp <- asr_max_parsimony(tree,gp.int)
 
 #Plot
-#anc.mp.mat<-(model.matrix(~as.factor(anc.mp[,1])-1) +model.matrix(~as.factor(anc.mp[,2])-1)) /2 #matrix of states for plotting nodes
-#plotTree(tree, type="fan",fsize=0.8,ftype="i")
-#cols<-setNames(palette()[1:length(unique(gp.int))],sort(unique(gp.int)))
-#tiplabels(pie=model.matrix(~as.factor(gp.int)-1),piecol=cols,cex=0.3)
-#  NOTE: barks on nodelabels
-#nodelabels(node=1:tree$Nnode+Ntip(tree),
-#           pie=anc.mp.mat,piecol=cols,cex=0.3)
-#add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
-#                  y=-max(nodeHeights(tree)),fsize=0.8)
+plotTree(tree, type="fan",fsize=0.8,ftype="i")
+cols<-setNames(palette()[1:length(unique(gp.int))],sort(unique(gp.int)))
+tiplabels(pie=model.matrix(~as.factor(gp.int)-1),piecol=cols,cex=0.3)
+nodelabels(node=1:tree$Nnode+Ntip(tree),
+           pie=anc.mp$ancestral_likelihoods,piecol=cols,cex=0.3)
+add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
+                  y=-max(nodeHeights(tree)),fsize=0.8)
 
 ### B: ML estimation
 anc.ML<-ace(gp,tree,model="ER",type="discrete")
