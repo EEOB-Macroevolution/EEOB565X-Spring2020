@@ -1,0 +1,77 @@
+---
+title: "Practical: Introduction to BiSSE and HiSSE"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Source
+
+You can find the source files for this tutorial on the class GitHub repository:
+
+[https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/03-BiSSE-HiSSE](https://github.com/EEOB-Macroevolution/EEOB565X-Spring2020/tree/master/practicals/03-BiSSE-HiSSE)
+
+
+## Setup
+
+The BiSSE model is implemented as part of the `diversitree` package, which also contains many other -SSE models, while the HiSSE model is implemented in the standalone package `hisse`. So we will start by installing and loading both of these packages.
+
+```{r eval=FALSE}
+install.packages("diversitree")
+install.packages("hisse")
+```
+```{r}
+library(diversitree)
+library(hisse)
+```
+
+## Detecting changes in diversification rates with BiSSE
+
+### Simulating trees
+
+To test the ability of BiSSE to detect differences in diversification rates, we are going to simulate a tree under a character-driven birth-death process, where the birth rates are very dependent on a trait while the death rates are identical. This will create a tree with 50 tips, with a birth rate of 4.0 in state 0 and 1.0 in state 1, a death rate in both states of 0.5, and a transition rate of 0.7 between the two states:
+
+```{r}
+sim_parameters = c(4.0, 1.0, 0.5, 0.5, 0.7, 0.7)
+tree_bisse = tree.bisse(sim_parameters, max.taxa = 50)
+plot(tree_bisse)
+```
+
+We can also show the history of our simulated tree. Here edges in state 0 will be shown in red, and edges in state 1 in blue.
+
+```{r}
+treehistory = history.from.sim.discrete(tree_bisse, 0:1)
+plot(treehistory, tree_bisse, cols = c("red", "blue"))
+```
+
+### Fitting the BiSSE model
+
+Now we will find out if BiSSE is able to correctly infer whether there are changes in the diversification rates on our simulated tree, by estimating the rates using maximum likelihood.
+
+This simply attaches a BiSSE model to our simulated tree:
+
+```{r}
+bisseModel = make.bisse(tree_bisse, tree_bisse$tip.state)
+```
+
+We are also going to need a starting point for our search:
+
+```{r}
+start_mle = starting.point.bisse(tree_bisse)
+```
+
+Finally, we are ready to perform ML estimation:
+```{r}
+bisse_mle = find.mle(bisseModel, start_mle)
+```
+
+Finally we can compare the ML estimates of the parameters to our simulation parameters
+```{r}
+sim_parameters
+coef(bisse_mle)
+```
+
+
+## Detecting changes in diversification rates with HiSSE
