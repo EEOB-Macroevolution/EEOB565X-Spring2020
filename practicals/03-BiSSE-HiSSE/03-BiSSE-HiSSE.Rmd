@@ -58,6 +58,8 @@ treehistory = history.from.sim.discrete(tree_bisse, 0:1)
 plot(treehistory, tree_bisse, cols = c("red", "blue"))
 ```
 
+Note that because we are each perfoming a different replicate simulation, your tree will not look like the one above. 
+
 ### Fitting the BiSSE model
 
 Now we will find out if BiSSE is able to correctly infer whether there are changes in the diversification rates on our simulated tree, by estimating the rates using maximum likelihood.
@@ -75,24 +77,34 @@ start_mle = starting.point.bisse(tree_bisse)
 start_mle
 ```
 
-Finally, we are ready to perform ML estimation:
+Finally, we are ready to perform ML estimation. To do this, we will use the `find.mle()` function from _diversitree_ to perform a maximum likelihood search to estimate the rate parameters under the BiSSE model.
 
 ```{r}
 bisse_mle = find.mle(bisse_model, start_mle)
 ```
 
-We can look at the final likelihood of the model:
+Let's view the log-likelihood for the set of parameters estimated from the search (keep in mind because we are working with different simulations, you will have a different value). 
 
 ```{r}
 logLik(bisse_mle)
 ```
 
-and compare the ML estimates of the parameters to our simulation parameters:
+Next we can compare the ML estimates of the parameters to our simulation parameters.
+Here are the simulation parameters, which are in the order: `lambda0`, `lambda1`, `mu0`, `mu1`, `q01`, `q10`.
 
 ```{r}
 sim_parameters
+```
+
+Now let's print the estimated parameters. To do this, we will use the function `coef()`, which will extract the extimated values from the `bisse_mle` object.
+We'll also round the estimates to two significant digits to make it easier to compare them to the true (simulated) values. 
+
+```{r}
 round(coef(bisse_mle),digits = 2)
 ```
+
+How accurate are your estimates?
+Do the MLE values capture the magnitude of the speciation and extinction rate differences among the two states?
 
 We can also compare the fit of the BiSSE model to a constrained model where the birth and death rates are identical between states
 
@@ -101,7 +113,7 @@ null_model = constrain(bisse_model, lambda0 ~ lambda1)
 null_model = constrain(null_model, mu0 ~ mu1)
 ```
 
-Similarly to above, we perform ML estimation on this model
+Similarly to above, we perform ML estimation on this model. For the starting values, we will just remove `lambda0` and `mu0` from our previous starting values.
 
 ```{r}
 start_mle_null = start_mle[c(-1,-3)]
