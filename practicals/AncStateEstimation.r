@@ -11,7 +11,7 @@ group<-read.csv('TutorialData/anole.gp.csv', row.names=1, header=TRUE,colClasses
 gp<-as.factor(t(group)); names(gp)<-row.names(group)
 
 #Plot 
-plotTree(tree,type="fan",fsize=0.8)
+plot(tree,type="fan")
 cols<-setNames(palette()[1:length(unique(gp))],sort(unique(gp)))
 tiplabels(pie=model.matrix(~gp-1),piecol=cols,cex=0.3)
 add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
@@ -23,7 +23,7 @@ gp.int<-as.numeric(gp); names(gp.int)<-names(gp)
 anc.mp <- asr_max_parsimony(tree,gp.int)
 
 #Plot
-plotTree(tree, type="fan",fsize=0.8,ftype="i")
+plot(tree, type="fan")
 cols<-setNames(palette()[1:length(unique(gp.int))],sort(unique(gp.int)))
 tiplabels(pie=model.matrix(~as.factor(gp.int)-1),piecol=cols,cex=0.3)
 nodelabels(node=1:tree$Nnode+Ntip(tree),
@@ -35,7 +35,7 @@ add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
 anc.ML<-ace(gp,tree,model="ER",type="discrete")
   round(anc.ML$lik.anc[1:10,],3)  #show result: 
 #PLOT  
-plotTree(tree,type="fan",fsize=0.8,ftype="i")
+plot(tree,type="fan")
 cols<-setNames(palette()[1:length(unique(gp))],sort(unique(gp)))
 nodelabels(node=1:tree$Nnode+Ntip(tree),
            pie=anc.ML$lik.anc,piecol=cols,cex=0.3)
@@ -47,7 +47,7 @@ add.simmap.legend(colors=cols,prompt=FALSE,x=0.9*par()$usr[1],
 #MCMC Stochastic Character Mapping (SIMMAP) based on Huelsenbeck et al. 2003
 # simulate single stochastic character map using empirical Bayes method
 tree.smp1<-make.simmap(tree,gp,model="ER")
-plot(tree.smp1,cols,type="fan",fsize=0.8,ftype="i")  #one run.  Not overly useful. 
+plot(tree.smp1,cols,type="fan")  #one run.  Not overly useful. 
 
 #Must do many times
 tree.smp<-make.simmap(tree,gp,model="ER",nsim=100)
@@ -70,8 +70,7 @@ nodelabels()
 
 #PLOT as color map
 tree.col<-contMap(tree,svl,plot=FALSE)  #runs Anc. St. Est. on branches of tree
-plot(tree.col,type="fan",legend=0.7*max(nodeHeights(tree)),
-     fsize=c(0.7,0.9))
+plot(tree.col,type="fan")
 
 #using 'ace' function in APE
 anc.cont.ML2<-ace(x=svl,phy=tree, type="continuous", method="ML")
