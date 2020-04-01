@@ -121,15 +121,15 @@ anova(bisse_mle, constrained = null_mle)
 ## Detecting changes in diversification rates with HiSSE
 
 One issue with the BiSSE model is that it has trouble distinguishing between changes in rates that are tied to the character state tested, and changes in rates which are independent of that character.
-To test this, we will make up an artificial character for our tree
+To test this, we make up an artificial character for our tree.
 
 ```{r}
-incorrect_tip_states = c(rep(1,25), rep(0,25))
+incorrect_tip_states = c(rep(0, 12), rep(1, 13), rep(0, 13), rep(1, 12))
 names(incorrect_tip_states) = names(tree_bisse$tip.state)
 incorrect_tip_states
 ```
 
-and run ML estimation using the BiSSE model and this new character
+Then we run ML estimation using the BiSSE model and this new character.
 
 ```{r}
 incorrect_bisse_model = make.bisse(tree_bisse, incorrect_tip_states)
@@ -150,4 +150,53 @@ Finally, we can again compare the fit of both models
 anova(incorrect_bisse_mle, constrained = incorrect_null_mle)
 ```
 
-The HiSSE model was developed to address this issue.
+The HiSSE model was developed to address this issue, by implementing a better null model than the simple constrained one we have been using so far. Note that the `hisse` package was developed independently from `diversitree`, so its syntax is going to be quite different.
+
+We want to test whether the changes in rates are due to the observed character or to a hidden one, so we will build a null model where the rates only depend on a hidden character. The first step is to build a transition rate matrix. 
+
+```{r}
+null_rate_matrix = TransMatMaker(hidden.states = TRUE)
+null_rate_matrix <- ParDrop(null_rate_matrix, c(3,5,8,10))
+```
+
+Then we need to specify which rates are shared between states. The states are ordered 0A, 1A, 0B, 1B, where 0/1 describes the observed character and A/B the hidden character. So we will specify that the rates are identical between 0 and 1 but can differ between A and B - i.e. that states 0A and 1A share one value, and 0B and 1B share another.
+
+```{r}
+null_net_turnover = c(1,1,2,2)
+null_extinction_fraction = c(1,1,2,2)
+```
+
+And finally we will transform the tip character we simulated previously into the HiSSE format.
+
+```{r}
+hisse_states = cbind(names(tree_bisse$tip.state), tree_bisse$tip.state)
+```
+
+Now we can run the ML estimation on the HiSSE null model. 
+
+```{r}
+null_hisse = hisse(tree_bisse, hisse_states, hidden.states=TRUE, turnover.anc = null_net_turnover, eps.anc = null_extinction_fraction, trans.rate = null_rate_matrix)
+null_hisse
+```
+
+We can now compare the AIC obtained from the BiSSE model with the AIC of the HiSSE null model.
+
+```{r}
+null_hisse$AIC
+AIC(bisse_mle)
+```
+
+Let us check whether HiSSE can detect that our artificial character is not the one driving the changes in rates. We build a similar HiSSE null model using this character.
+
+```{r}
+incorrect_hisse_states = cbind(names(incorrect_tip_states), incorrect_tip_states)
+null_incorrect_hisse = hisse(tree_bisse, incorrect_hisse_states, hidden.states=TRUE, turnover.anc = null_net_turnover, eps.anc = null_extinction_fraction, trans.rate = null_rate_matrix)
+```
+
+And again we can compare the AIC values obtained.
+
+```{r}
+null_incorrect_hisse$AIC
+AIC(incorrect_bisse_mle)
+```
+
