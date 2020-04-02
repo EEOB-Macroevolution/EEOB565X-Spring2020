@@ -129,6 +129,7 @@ Let us compare the fit of both models
 anova(bisse_mle, constrained = null_bisse_mle)
 ```
 
+The AIC comparison of the two models shows that the `full` model is a better fit for our simulated data.
 
 ## Detecting changes in diversification rates with HiSSE
 
