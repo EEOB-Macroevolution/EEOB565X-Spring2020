@@ -58,7 +58,7 @@ treehistory = history.from.sim.discrete(tree_bisse, 0:1)
 plot(treehistory, tree_bisse, cols = c("red", "blue"))
 ```
 
-Note that because we are each perfoming a different replicate simulation, your tree will not look like the one above. 
+Note that because we are each performing a different replicate simulation, your tree will not look like the one above. 
 
 ### Fitting the BiSSE model
 
@@ -96,7 +96,7 @@ Here are the simulation parameters, which are in the order: `lambda0`, `lambda1`
 sim_parameters
 ```
 
-Now let's print the estimated parameters. To do this, we will use the function `coef()`, which will extract the extimated values from the `bisse_mle` object.
+Now let's print the estimated parameters. To do this, we will use the function `coef()`, which will extract the estimated values from the `bisse_mle` object.
 We'll also round the estimates to two significant digits to make it easier to compare them to the true (simulated) values. 
 
 ```{r}
@@ -208,6 +208,8 @@ AIC(null_bisse_mle)
 AIC(bisse_mle)
 ```
 
+The AIC value for the `bisse_mle` model indicates that the data fit this model the best. 
+
 Let us check whether HiSSE can detect that our artificial character is not the one driving the changes in rates. We build a similar HiSSE null model using this character.
 
 ```{r}
@@ -222,3 +224,5 @@ incorrect_null_hisse$AIC
 AIC(incorrect_null_bisse_mle)
 AIC(incorrect_bisse_mle)
 ```
+
+These model comparisons indicate that the BiSSE model is a better fit for the data. However, given the closeness of the AIC values, it is likely the data are not informative enough to distinguish the model fit correctly.
