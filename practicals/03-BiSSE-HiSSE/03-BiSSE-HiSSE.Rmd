@@ -109,8 +109,8 @@ Do the MLE values capture the magnitude of the speciation and extinction rate di
 We can also compare the fit of the BiSSE model to a constrained model where the birth and death rates are identical between states
 
 ```{r}
-null_model = constrain(bisse_model, lambda0 ~ lambda1)
-null_model = constrain(null_model, mu0 ~ mu1)
+null_bisse_model = constrain(bisse_model, lambda0 ~ lambda1)
+null_bisse_model = constrain(null_bisse_model, mu0 ~ mu1)
 ```
 
 Similarly to above, we perform ML estimation on this model. For the starting values, we will just remove `lambda0` and `mu0` from our previous starting values.
@@ -119,14 +119,14 @@ Similarly to above, we perform ML estimation on this model. For the starting val
 start_mle_null = start_mle[c(-1,-3)]
 start_mle_null
 
-null_mle = find.mle(null_model, start_mle_null)
-round(coef(null_mle),digits = 2)
+null_bisse_mle = find.mle(null_bisse_model, start_mle_null)
+round(coef(null_bisse_mle),digits = 2)
 ```
 
 Let us compare the fit of both models
 
 ```{r}
-anova(bisse_mle, constrained = null_mle)
+anova(bisse_mle, constrained = null_bisse_mle)
 ```
 
 
@@ -151,15 +151,15 @@ incorrect_bisse_mle = find.mle(incorrect_bisse_model, start_mle)
 Similarly to before, we will also try a null model where both birth rates and death rates are identical between states
 
 ```{r}
-incorrect_null_model = constrain(incorrect_bisse_model, lambda0 ~ lambda1)
-incorrect_null_model = constrain(incorrect_null_model, mu0 ~ mu1)
-incorrect_null_mle = find.mle(incorrect_null_model, start_mle_null)
+incorrect_null_bisse_model = constrain(incorrect_bisse_model, lambda0 ~ lambda1)
+incorrect_null_bisse_model = constrain(incorrect_null_bisse_model, mu0 ~ mu1)
+incorrect_null_bisse_mle = find.mle(incorrect_null_bisse_model, start_mle_null)
 ```
 
 Finally, we can again compare the fit of both models
 
 ```{r}
-anova(incorrect_bisse_mle, constrained = incorrect_null_mle)
+anova(incorrect_bisse_mle, constrained = incorrect_null_bisse_mle)
 ```
 
 The HiSSE model was developed to address this issue, by implementing a better null model than the simple constrained one we have been using so far. Note that the `hisse` package was developed independently from `diversitree`, so its syntax is going to be quite different.
@@ -168,7 +168,15 @@ We want to test whether the changes in rates are due to the observed character o
 
 ```{r}
 null_rate_matrix = TransMatMaker(hidden.states = TRUE)
-null_rate_matrix <- ParDrop(null_rate_matrix, c(3,5,8,10))
+```
+
+We will use the transition rates recommended by the _hisse_ documentation.
+
+```{r}
+null_rate_matrix = ParDrop(null_rate_matrix, c(3,5,8,10)) # no simultaneous transitions in both characters
+null_rate_matrix[cbind(c(1,3,2,4), c(3,1,4,2))] = 2 # rates for change between rate classes
+null_rate_matrix[cbind(c(2,4), c(1,3))] = 1 # rates for 1 -> 0 transition in character are equal
+null_rate_matrix[cbind(c(1,3), c(2,4))] = 3 # rates for 0 -> 1 transition in character are equal
 ```
 
 Then we need to specify which rates are shared between states. The states are ordered 0A, 1A, 0B, 1B, where 0/1 describes the observed character and A/B the hidden character. So we will specify that the rates are identical between 0 and 1 but can differ between A and B - i.e. that states 0A and 1A share one value, and 0B and 1B share another.
@@ -195,6 +203,7 @@ We can now compare the AIC obtained from the BiSSE model with the AIC of the HiS
 
 ```{r}
 null_hisse$AIC
+AIC(null_bisse_mle)
 AIC(bisse_mle)
 ```
 
@@ -202,13 +211,13 @@ Let us check whether HiSSE can detect that our artificial character is not the o
 
 ```{r}
 incorrect_hisse_states = cbind(names(incorrect_tip_states), incorrect_tip_states)
-null_incorrect_hisse = hisse(tree_bisse, incorrect_hisse_states, hidden.states=TRUE, turnover.anc = null_net_turnover, eps.anc = null_extinction_fraction, trans.rate = null_rate_matrix)
+incorrect_null_hisse = hisse(tree_bisse, incorrect_hisse_states, hidden.states=TRUE, turnover.anc = null_net_turnover, eps.anc = null_extinction_fraction, trans.rate = null_rate_matrix)
 ```
 
 And again we can compare the AIC values obtained.
 
 ```{r}
-null_incorrect_hisse$AIC
+incorrect_null_hisse$AIC
+AIC(incorrect_null_bisse_mle)
 AIC(incorrect_bisse_mle)
 ```
-
