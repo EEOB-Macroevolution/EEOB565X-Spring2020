@@ -23,9 +23,9 @@ text(x=2+Y.pc[,1],y=.5+Y.pc[,2],row.names(Y.pc),cex=.5)
 #### Analyses
 #0: Phylomorphospace (ie, plot the data)
 phylomorphospace(tree = plethtree,X = Y.pc[,1:2])
+
+#Note: in next version of geomorph, this will be deprecated. gm.prcomp will be used instead
 plotGMPhyloMorphoSpace(phy = plethtree,A = arrayspecs(Y,p=1,k=6), ancStates = FALSE, tip.labels = FALSE) 
-plotGMPhyloMorphoSpace(phy = plethtree,A = arrayspecs(Y,p=1,k=6), ancStates = FALSE) 
-    #note: axes are properly scaled; In phytools they are not
 plotGMPhyloMorphoSpace(phy = plethtree,A = arrayspecs(Y,p=1,k=6),ancStates = FALSE, zaxis = "time") 
 
 #1: Phylogenetic regression via phylo-transform and RRPP: Regression of multivariate data~size

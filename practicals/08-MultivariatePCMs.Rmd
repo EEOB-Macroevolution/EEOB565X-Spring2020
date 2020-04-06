@@ -8,7 +8,7 @@ output: html_document
 ### **Overview**
 Today we examine how one can perform phylogenetic comparative analyses on multivariate datasets. For this, the phenotypic data (Y) is a N x p matrix of phenotypic values for N species, across p trait dimensions. These p-dimensions could be a set of univariate traits (e.g., length, width, height, etc.) or they could represent a multi-dimensional trait encoded by multiple numbers (e.g., shape from geometric morphometric methods). The goal is to evaluate patterns in the response variables (Y) while conditioning the data on the phylogeny. In other words, we wish to perform macroevolutionary analyses via phylogenetic comparative methods, but do so on multivariate data. 
 
-As we discussed in class, most univariate PCMs now have a multivariate counter-part: phylogenetic regression, phylogenetic ANOVA, phylogenetic correlation, phylogenetic signal, and comparing rates of phenotypic evolution. What does *NOT* have a proper multivariate counter-part are multivariate evolutionary models beyond BM1 and BMM (see Adams and Collyer 2018a). 
+As we discussed in class, most univariate PCMs now have a multivariate counter-part: phylogenetic regression, phylogenetic ANOVA, phylogenetic correlation, phylogenetic signal, and comparing rates of phenotypic evolution. What does *NOT* have a proper multivariate counter-part are multivariate evolutionary models beyond BM1 and BMM (see Adams and Collyer 2018a; Adams and Collyer 2019). 
 
 ### Download data files
 Today we will use data from the following files: 
